@@ -1,60 +1,35 @@
 package soft2.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
+    private final List<Bike> inventory;
 
-    private List<Bike> inventory;
-
-    public Shop(List<Bike> inventory) {
-        this.inventory = inventory;
+    public Shop(List<Bike> initial) {
+        this.inventory = new ArrayList<>(initial); // ensure mutable
     }
 
-    public List<Bike> getInventory() {
-        return inventory;
-    }
-    public void setInventory(List<Bike> inventory) {
-        this.inventory = inventory;
-    }
+    public List<Bike> getInventory() { return inventory; }
 
     public Bike findBikeById(int id) {
-        for (Bike bike : inventory) {
-            if (bike.getId() == id) {
-                return bike;
-            }
-        }
-        return null; // Bike not found
+        for (Bike b : inventory) if (b.getId() == id) return b;
+        return null;
     }
 
     public boolean reserveBike(int id) {
-        Bike bike = findBikeById(id);
-        if (bike != null && !bike.isReserved()) {
-            bike.setReserved(true);
-            return true; // Reservation successful
-        }
-        return false; // Bike not found or already reserved
+        Bike b = findBikeById(id);
+        if (b != null && !b.isReserved()) { b.setReserved(true); return true; }
+        return false;
     }
+
     public boolean returnBike(int id) {
-        Bike bike = findBikeById(id);
-        if (bike != null && bike.isReserved()) {
-            bike.setReserved(false);
-            return true; // Return successful
+        Bike b = findBikeById(id);
+        if (b != null && b.isReserved()) {
+            b.setReserved(false);
+            return true;
         }
-        return false; // Bike not found or not reserved
-    }
-
-
-    public Bike addBikeToInventory(Bike bike) {
-        inventory.add(bike);
-        return bike;
-    }
-    public Bike removeBikeFromInventory(int id) {
-        Bike bike = findBikeById(id);
-        if (bike != null) {
-            inventory.remove(bike);
-            return bike;
-        }
-        return null; // Bike not found
+        return false;
     }
 
 

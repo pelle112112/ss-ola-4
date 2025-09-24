@@ -1,40 +1,61 @@
 package soft2.persistence;
 
-import soft2.model.Bike;
-import soft2.model.Shop;
+import soft2.model.*;
 
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BikeDAO {
 
-    // In memory database
+    private final List<Bike> bikes = new ArrayList<>(List.of(
+            new Bike(1, "Mountain"),
+            new Bike(2, "Road"),
+            new Bike(3, "Hybrid"),
+            new Bike(4, "Electric"),
+            new Bike(5, "BMX"),
+            new Bike(6, "Cruiser")
+    ));
+    private final Shop shop = new Shop(bikes);
 
-    List <Bike> bikes = List.of(
-        new Bike(1, "Mountain", 20),
-        new Bike(2, "Road", 15),
-        new Bike(3, "Hybrid", 18),
-        new Bike(4, "Electric", 25),
-        new Bike(5, "BMX", 10),
-        new Bike(6, "Cruiser", 12)
-    );
-    Shop shop = new Shop(bikes);
+    private final PricingService pricing = new PricingService(Map.of(
+            "Mountain", 2000,
+            "Road",     1500,
+            "Hybrid",   1800,
+            "Electric", 2500,
+            "BMX",      1000,
+            "Cruiser",  1200
+    ));
+
+    // Active rentals (bikeId -> Rental)
+    private final ConcurrentHashMap<Integer, Rental> activeRentals = new ConcurrentHashMap<>();
 
     private static BikeDAO instance = null;
     private BikeDAO() {}
     public static BikeDAO getInstance() {
-        if (instance == null) {
-            instance = new BikeDAO();
-        }
+        if (instance == null) { instance = new BikeDAO(); }
         return instance;
     }
-    public List<Bike> getAllBikes() {
-        return shop.getInventory();
+
+    public List<Bike> getAllBikes() { return shop.getInventory(); }
+    public Shop shop() { return shop; }
+    public PricingService pricing() { return pricing; }
+
+    public boolean reserveBike(int id) { return shop.reserveBike(id); }
+    public boolean returnBike(int id) { return shop.returnBike(id); }
+
+    public Rental startRental(int bikeId, int startPrice) {
+        var rental = new Rental(bikeId, startPrice);
+        activeRentals.put(bikeId, rental);
+        return rental;
     }
-    public boolean reserveBike(int id) {
-        return shop.reserveBike(id);
+
+    public Rental endRental(int bikeId) {
+        var rental = activeRentals.remove(bikeId);
+        if (rental != null) {
+            rental.end();
+        }
+        return rental;
     }
-    public boolean returnBike(int id) {
-        return shop.returnBike(id);
-    }
+
 
 }
