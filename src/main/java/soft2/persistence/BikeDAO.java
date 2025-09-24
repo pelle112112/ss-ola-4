@@ -18,15 +18,14 @@ public class BikeDAO {
     private final Shop shop = new Shop(bikes);
 
     private final PricingService pricing = new PricingService(Map.of(
-            "Mountain", 2000,
-            "Road",     1500,
-            "Hybrid",   1800,
-            "Electric", 2500,
-            "BMX",      1000,
-            "Cruiser",  1200
+            "Mountain", 50,
+            "Road",     60,
+            "Hybrid",   45,
+            "Electric", 100,
+            "BMX",      25,
+            "Cruiser",  30
     ));
 
-    // Active rentals (bikeId -> Rental)
     private final ConcurrentHashMap<Integer, Rental> activeRentals = new ConcurrentHashMap<>();
 
     private static BikeDAO instance = null;
