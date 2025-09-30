@@ -9,6 +9,9 @@
         button { padding: .5rem 1rem; }
         input { padding: .4rem; margin: .2rem; }
         pre { background: #f6f6f6; padding: 1rem; max-height: 300px; overflow:auto; }
+        .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; }
+        .row label { min-width:110px; font-weight:600; }
+        .row input { width:280px; max-width:100%; }
     </style>
 </head>
 <body>
@@ -16,36 +19,44 @@
 
 <section>
     <h2>Login</h2>
-    <input id="user_id" placeholder="user_id" value="u1">
-    <input id="password" placeholder="password" value="pass" type="password">
-    <button onclick="login()">POST /api/auth/login</button>
+    <div class="row">
+        <input id="user_id" placeholder="user_id" value="u1">
+        <input id="password" placeholder="password" value="pass" type="password">
+        <button onclick="login()">POST /api/auth/login</button>
+    </div>
 </section>
 
 <section>
     <h2>Bikes</h2>
-    <button onclick="getBikes()">GET /api/bikes</button>
-    <input id="bike_id" placeholder="bike_id" value="1">
-    <button onclick="reserve()">POST /api/reservations</button>
+    <div class="row">
+        <button onclick="getBikes()">GET /api/bikes</button>
+        <input id="bike_id" placeholder="bike_id" value="1">
+        <button onclick="reserve()">POST /api/reservations</button>
+    </div>
 </section>
 
 <section>
     <h2>Rentals</h2>
-    <input id="reservation_id" placeholder="reservation_id">
-    <button onclick="startRental()">POST /api/rentals/start</button>
-    <input id="rental_bike_id" placeholder="bike_id">
-    <button onclick="endRental()">POST /api/rentals/end</button>
+    <div class="row">
+        <label for="reservation_id">Reservation ID</label>
+        <input id="reservation_id" placeholder="reservation_id" />
+        <button onclick="startRental()">POST /api/rentals/start</button>
+    </div>
+    <div class="row">
+        <label for="rental_bike_id">Bike ID</label>
+        <input id="rental_bike_id" placeholder="bike_id" />
+        <button onclick="endRental()">POST /api/rentals/end</button>
+    </div>
 </section>
 
 <section>
     <h2>Admin (simplified)</h2>
-    <div>
-        <strong>Add bike</strong><br/>
+    <div class="row">
         <input id="admin_id_add" placeholder="admin id" value="admin">
         <input id="type" placeholder="type" value="City">
         <button onclick="adminAddBike()">POST /api/admin/add-bike</button>
     </div>
-    <div style="margin-top: 8px;">
-        <strong>Remove bike</strong><br/>
+    <div class="row">
         <input id="admin_id_remove" placeholder="admin id" value="admin">
         <input id="remove_bike_id" placeholder="bike id" value="2">
         <button onclick="adminRemoveBike()">POST /api/admin/remove-bike/:id</button>
@@ -62,8 +73,9 @@
 
     function headers(){
         const h = { 'Content-Type':'application/json' };
-        // TODO (you): add X-Correlation-Id and X-User-Id headers to drive MDC if you want
+        // Optional: drive MDC via headers
         if (currentUserId) h['X-User-Id'] = currentUserId;
+        h['X-Correlation-Id'] = crypto.randomUUID();
         return h;
     }
     function log(x){
