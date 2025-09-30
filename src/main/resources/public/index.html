@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>City Bikes — Demo</title>
+    <style>
+        body { font-family: system-ui, sans-serif; margin: 2rem; }
+        section { margin-bottom: 2rem; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; }
+        button { padding: .5rem 1rem; }
+        input { padding: .4rem; margin: .2rem; }
+        pre { background: #f6f6f6; padding: 1rem; max-height: 300px; overflow:auto; }
+    </style>
+</head>
+<body>
+<h1>Copenhagen City Bikes — API Exerciser</h1>
+
+<section>
+    <h2>Login</h2>
+    <input id="user_id" placeholder="user_id" value="u1">
+    <input id="password" placeholder="password" value="pass" type="password">
+    <button onclick="login()">POST /api/auth/login</button>
+</section>
+
+<section>
+    <h2>Bikes</h2>
+    <button onclick="getBikes()">GET /api/bikes</button>
+    <input id="bike_id" placeholder="bike_id" value="1">
+    <button onclick="reserve()">POST /api/reservations</button>
+</section>
+
+<section>
+    <h2>Rentals</h2>
+    <input id="reservation_id" placeholder="reservation_id">
+    <button onclick="startRental()">POST /api/rentals/start</button>
+    <input id="rental_bike_id" placeholder="bike_id">
+    <button onclick="endRental()">POST /api/rentals/end</button>
+</section>
+
+<section>
+    <h2>Admin (simplified)</h2>
+    <div>
+        <strong>Add bike</strong><br/>
+        <input id="admin_id_add" placeholder="admin id" value="admin">
+        <input id="type" placeholder="type" value="City">
+        <button onclick="adminAddBike()">POST /api/admin/add-bike</button>
+    </div>
+    <div style="margin-top: 8px;">
+        <strong>Remove bike</strong><br/>
+        <input id="admin_id_remove" placeholder="admin id" value="admin">
+        <input id="remove_bike_id" placeholder="bike id" value="2">
+        <button onclick="adminRemoveBike()">POST /api/admin/remove-bike/:id</button>
+    </div>
+</section>
+
+<section>
+    <h2>Output</h2>
+    <pre id="out"></pre>
+</section>
+
+<script>
+    let currentUserId = null;
+
+    function headers(){
+        const h = { 'Content-Type':'application/json' };
+        // TODO (you): add X-Correlation-Id and X-User-Id headers to drive MDC if you want
+        if (currentUserId) h['X-User-Id'] = currentUserId;
+        return h;
+    }
+    function log(x){
+        document.getElementById('out').textContent =
+            typeof x === 'string' ? x : JSON.stringify(x, null, 2);
+    }
+
+    async function login(){
+        const user_id = document.getElementById('user_id').value;
+        const password = document.getElementById('password').value;
+        const r = await fetch('/api/auth/login', {
+            method:'POST', headers: headers(), body: JSON.stringify({user_id, password})
+        });
+        const j = await r.json();
+        if (j.ok) currentUserId = j.user_id;
+        log(j);
+    }
+    async function getBikes(){
+        const r = await fetch('/api/bikes', {headers: headers()});
+        log(await r.json());
+    }
+    async function reserve(){
+        const bike_id = parseInt(document.getElementById('bike_id').value);
+        const r = await fetch('/api/reservations', {
+            method:'POST', headers: headers(),
+            body: JSON.stringify({user_id: currentUserId || 'u1', bike_id})
+        });
+        const j = await r.json();
+        if (j.id) document.getElementById('reservation_id').value = j.id;
+        log(j);
+    }
+    async function startRental(){
+        const reservation_id = document.getElementById('reservation_id').value;
+        const r = await fetch('/api/rentals/start', {
+            method:'POST', headers: headers(),
+            body: JSON.stringify({user_id: currentUserId || 'u1', reservation_id})
+        });
+        log(await r.json());
+    }
+    async function endRental(){
+        const bike_id = parseInt(document.getElementById('rental_bike_id').value || document.getElementById('bike_id').value);
+        const r = await fetch('/api/rentals/end', {
+            method:'POST', headers: headers(),
+            body: JSON.stringify({user_id: currentUserId || 'u1', bike_id})
+        });
+        log(await r.json());
+    }
+    async function adminAddBike(){
+        const admin_id = document.getElementById('admin_id_add').value;
+        const type = document.getElementById('type').value || 'City';
+        const r = await fetch('/api/admin/add-bike', {
+            method:'POST', headers: headers(),
+            body: JSON.stringify({admin_id, type})
+        });
+        log(await r.json());
+    }
+    async function adminRemoveBike(){
+        const admin_id = document.getElementById('admin_id_remove').value;
+        const id = parseInt(document.getElementById('remove_bike_id').value);
+        const r = await fetch('/api/admin/remove-bike/' + id, {
+            method:'POST', headers: headers(),
+            body: JSON.stringify({admin_id})
+        });
+        log(await r.json());
+    }
+</script>
+</body>
+</html>

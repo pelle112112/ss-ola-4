@@ -1,19 +1,23 @@
 package soft2.routing;
 
 import io.javalin.Javalin;
-import soft2.controllers.BikeController;
+import soft2.controllers.*;
 
 public class Routes {
     public static void register(Javalin app) {
-        var ctrl = new BikeController();
+        var bikes = new BikeController();
+        var auth = new AuthController();
+        var reservations = new ReservationController();
+        var rentals = new RentalController();
+        var admin = new AdminController();
 
-        app.get ("/bikes",                 ctrl.getAllBikes());
-        app.post("/bikes/{id}/reserve",    ctrl.reserveBike());
-        app.post("/bikes/{id}/start",      ctrl.startRental());
-        app.post("/bikes/{id}/return",     ctrl.returnBike());
+        app.get("/api/bikes", bikes.getAllBikes());
+        app.post("/api/auth/login", auth.login());
+        app.post("/api/reservations", reservations.reserveBike());
+        app.post("/api/rentals/start", rentals.startRental());
+        app.post("/api/rentals/end", rentals.endRental());
 
-
-        app.post  ("/admin/inventory",     ctrl.addBike());
-        app.delete("/admin/inventory/{id}",ctrl.removeBike());
+        app.post("/api/admin/add-bike", admin.addBike());
+        app.post("/api/admin/remove-bike/{id}", admin.removeBike());
     }
 }
