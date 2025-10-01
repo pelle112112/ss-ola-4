@@ -6,7 +6,7 @@
 ## How to Run
 The app is build on maven with Javelin, Jackson, slf4j and logback
 
-Run the [App.java]("/src/main/java/soft2/App.java") to start the project on port ```http://localhost:7000/```
+Run the [App.java](/src/main/java/soft2/App.java) to start the project on port ```http://localhost:7000/```
 
 
 
@@ -33,10 +33,10 @@ POST /api/admin/remove-bike/{id} – admin removes a bike { "admin_id": "a1" }
 
 System Logging has succesfully been done to capture different events for the application, requests and errors.
 
-The [logback.xml]("/src/main/resources/logback.xml") file defines the logging configuration for the application, including appenders (where logs are written), log rotation and retention rules, and separate loggers for system logs (console + logs/app.log) and audit logs (logs/audit.log in JSON format).
+The [logback.xml](/src/main/resources/logback.xml) file defines the logging configuration for the application, including appenders (where logs are written), log rotation and retention rules, and separate loggers for system logs (console + logs/app.log) and audit logs (logs/audit.log in JSON format).
 
 
-app.log can be found [here]("/logs/app.log")
+app.log can be found [here](/logs/app.log)
 
 The app writes system logs to show what is going on.
 When the server starts or stops, this is written to the log. Each request is logged with the method, path, status, how long it took, and a correlation id. Normal events like making a reservation or adding a bike are logged at INFO. If the simulated check runs slow (over 800 ms), it is logged as a WARN. 
@@ -61,7 +61,7 @@ java.lang.IllegalStateException: Bike not available
 
 ## B) Audit Logs
 
-Audit logs can be found [here]("/logs/audit.log")
+Audit logs can be found [here](/logs/audit.log)
 
 
 Audit logs are used to track user actions.
