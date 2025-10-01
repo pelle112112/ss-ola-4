@@ -96,4 +96,4 @@ Rotation and Retention
 
 System logs are written to logs/app.log. This file is rotated once per day and old files are kept for 14 days.
 Audit logs are written to logs/audit.log. This file is also rotated once per day but old files are kept for 180 days.
-The rules for rotation and retention are set in the logback.xml file.
+The rules for rotation and retention are set in the [logback.xml file](/src/main/resources/logback.xml)
