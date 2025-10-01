@@ -6,7 +6,7 @@
 ## How to Run
 The app is build on maven with Javelin, Jackson, slf4j and logback
 
-Run the [App.java]("/src/main/java/soft2/App.java") to start the project on port ```http://localhost:7000/```
+Run the [App.java](/src/main/java/soft2/App.java) to start the project on port ```http://localhost:7000/```
 
 
 
