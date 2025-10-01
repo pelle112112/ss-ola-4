@@ -6,7 +6,7 @@ Lasse Hansen - cph-lh479@stud.ek.dk
 
 Pelle Hald Vedsmand - cph-pv73@stud.ek.dk
 
-Nicolai Rosendahl - cph-nr135@stud.ek.dkNicolai, Lasse and Pelle
+Nicolai Rosendahl - cph-nr135@stud.ek.dk
 
 
 ## How to Run
