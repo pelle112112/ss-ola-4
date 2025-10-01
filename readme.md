@@ -32,10 +32,10 @@ POST /api/admin/remove-bike/{id} – admin removes a bike { "admin_id": "a1" }
 
 System logins has succesfully been done to capture different events for the application, requests and errors.
 
-The [logback.xml]("/src/main/resources/logback.xml") file defines the logging configuration for the application, including appenders (where logs are written), log rotation and retention rules, and separate loggers for system logs (console + logs/app.log) and audit logs (logs/audit.log in JSON format).
+The [logback.xml](/src/main/resources/logback.xml) file defines the logging configuration for the application, including appenders (where logs are written), log rotation and retention rules, and separate loggers for system logs (console + logs/app.log) and audit logs (logs/audit.log in JSON format).
 
 
-app.log can be found [here]("/logs/app.log")
+app.log can be found [here](/logs/app.log)
 
 The app writes system logs to show what is going on.
 When the server starts or stops, this is written to the log. Each request is logged with the method, path, status, how long it took, and a correlation id. Normal events like making a reservation or adding a bike are logged at INFO. If the simulated check runs slow (over 800 ms), it is logged as a WARN. Errors are logged once at ERROR with the stack trace. We also add correlation_id and user_id so requests can be traced.
@@ -47,7 +47,7 @@ Example of system log:
 ```10:50:55 INFO  soft2.App - Request handled method=POST path=/api/rentals/start status=201 Created elapsed_ms=1```
 ## B) Audit Logs
 
-Audit logs can be found [here]("/logs/audit.log")
+Audit logs can be found [here](/logs/audit.log)
 
 
 Audit logs are used to track user actions.
