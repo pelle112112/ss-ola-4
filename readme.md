@@ -12,6 +12,7 @@ Run the [App.java]("/src/main/java/soft2/App.java") to start the project on port
 
 ## Endpoints 
 
+```
 GET /api/bikes – list available bikes
 
 POST /api/reservations – reserve a bike { "user_id": "u1", "bike_id": 1 }
@@ -25,12 +26,12 @@ POST /api/auth/login – simulate login { "user_id": "u1", "password": "secret" 
 POST /api/admin/add-bike – admin adds a bike { "admin_id": "a1", "type": "City" }
 
 POST /api/admin/remove-bike/{id} – admin removes a bike { "admin_id": "a1" }
-
+```
 
 ## A) System Logging
 
 
-System logins has succesfully been done to capture different events for the application, requests and errors.
+System Logging has succesfully been done to capture different events for the application, requests and errors.
 
 The [logback.xml]("/src/main/resources/logback.xml") file defines the logging configuration for the application, including appenders (where logs are written), log rotation and retention rules, and separate loggers for system logs (console + logs/app.log) and audit logs (logs/audit.log in JSON format).
 
@@ -38,13 +39,26 @@ The [logback.xml]("/src/main/resources/logback.xml") file defines the logging co
 app.log can be found [here]("/logs/app.log")
 
 The app writes system logs to show what is going on.
-When the server starts or stops, this is written to the log. Each request is logged with the method, path, status, how long it took, and a correlation id. Normal events like making a reservation or adding a bike are logged at INFO. If the simulated check runs slow (over 800 ms), it is logged as a WARN. Errors are logged once at ERROR with the stack trace. We also add correlation_id and user_id so requests can be traced.
+When the server starts or stops, this is written to the log. Each request is logged with the method, path, status, how long it took, and a correlation id. Normal events like making a reservation or adding a bike are logged at INFO. If the simulated check runs slow (over 800 ms), it is logged as a WARN. 
+
+```
+11:06:28 WARN  s.controllers.ReservationController - Verification slow elapsed_ms=946 using_fallback=true
+```
+
+Errors are logged once at ERROR with the stack trace. We also add correlation_id and user_id so requests can be traced.
 
 The app also writes audit logs for security. These show who did what, when, and from where. Actions like login, reservation, rental start, rental end, and admin inventory changes are written as JSON lines. Each log has the user id, the resource, the action type, the IP address, and the correlation id. Audit logs only use ids, never names, emails, or passwords.
 
-Example of system log:
+Examples of a few system logs:
 
-```10:50:55 INFO  soft2.App - Request handled method=POST path=/api/rentals/start status=201 Created elapsed_ms=1```
+```
+11:04:29 INFO  soft2.App - Request handled method=POST path=/api/reservations status=201 Created elapsed_ms=833
+11:04:31 INFO  soft2.App - Request handled method=GET path=/api/bikes status=200 OK elapsed_ms=0
+11:06:23 INFO  s.controllers.ReservationController - Verification ok elapsed_ms=233
+11:06:23 ERROR s.controllers.ReservationController - Reservation failed bike_id=1 error=IllegalStateException
+java.lang.IllegalStateException: Bike not available
+```
+
 ## B) Audit Logs
 
 Audit logs can be found [here]("/logs/audit.log")
