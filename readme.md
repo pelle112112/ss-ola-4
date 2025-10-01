@@ -1,6 +1,10 @@
 # Ola 4 
 
-#### By Nicolai, Lasse and Pelle
+## Made by
+
+Lasse Hansen - cph-lh479@stud.ek.dk
+Pelle Hald Vedsmand - cph-pv73@stud.ek.dk
+Nicolai Rosendahl - cph-nr135@stud.ek.dkNicolai, Lasse and Pelle
 
 
 ## How to Run
