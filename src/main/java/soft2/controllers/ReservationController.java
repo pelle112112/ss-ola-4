@@ -14,7 +14,6 @@ public class ReservationController {
     private static final Logger audit = LoggerFactory.getLogger("AUDIT");
 
     public Handler reserveBike() {
-        simulateVerification(log);
         return ctx -> {
             Map<String, Object> body = ctx.bodyAsClass(Map.class);
             String userId = String.valueOf(body.get("user_id"));
@@ -22,10 +21,15 @@ public class ReservationController {
                     : Integer.parseInt(String.valueOf(body.get("bike_id"))));
 
             try {
+                // simulate an external verification call for each reservation
+                simulateVerification(log);
+
                 MDC.put("user_id", userId);
                 Reservation res = Store.get().createReservation(userId, bikeId);
+
                 audit.info("USER_ACTION: type=RESERVATION_CREATE user_id={} resource_id={} ip={}",
                         userId, "bike:" + bikeId, ip(ctx));
+
                 ctx.status(201).json(res);
             } catch (Exception e) {
                 log.error("Reservation failed bike_id={} error={}", bikeId, e.getClass().getSimpleName(), e);
@@ -39,11 +43,11 @@ public class ReservationController {
         return (fwd != null) ? fwd : ctx.req().getRemoteAddr();
     }
 
-    private static void simulateVerification(org.slf4j.Logger log) {
+    private static void simulateVerification(Logger log) {
         long start = System.currentTimeMillis();
         try {
             // simulate 100–1200ms latency
-            long delay = 100 + (long)(Math.random() * 1100);
+            long delay = 100 + (long) (Math.random() * 1100);
             Thread.sleep(delay);
             boolean fallback = delay > 800;
             if (fallback) {
@@ -56,5 +60,4 @@ public class ReservationController {
             log.error("Verification interrupted", e);
         }
     }
-
 }
